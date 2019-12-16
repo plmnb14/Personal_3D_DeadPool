@@ -36,6 +36,10 @@ public:
 
 public:
 	void Set_CameraMode(CameraMode _CameraType);
+	void Set_CameraViewType(CameraView _CameraViewType);
+
+private:
+	void Change_Type_Option(CameraView _CameraViewType);
 
 public:
 	_float		Get_XAngle();
@@ -82,7 +86,7 @@ protected:	// Device Setting
 	_mat			m_MatProj;
 
 protected:
-	POINT m_MousePoint;
+	//POINT m_MousePoint;
 
 protected:	// Camera Position Setting
 	_float m_fDistance;			// Camera to target distance
@@ -114,6 +118,7 @@ protected:	// Rotate Value
 
 protected:
 	_bool m_bMainCamera;
+	_bool m_bGetMp;
 };
 
 END

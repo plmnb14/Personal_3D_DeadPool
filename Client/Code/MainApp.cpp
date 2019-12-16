@@ -6,7 +6,8 @@
 #include "Monster.h"
 
 CMainApp::CMainApp()
-	: m_pDeviceMgr(nullptr), m_pManagement(nullptr)
+	: m_pDeviceMgr(nullptr), m_pManagement(nullptr), 
+	m_pKeyMgr(ENGINE::CKeyMgr::GetInstance())
 {
 }
 
@@ -53,8 +54,22 @@ void CMainApp::Render_MainApp()
 
 void CMainApp::LateUpdate_MainApp()
 {
+	Global_KeyInput();
 	m_pManagement->LateUpdate_Scene();
-	ENGINE::CKeyMgr::GetInstance()->Update();
+	m_pKeyMgr->Update();
+}
+
+void CMainApp::Global_KeyInput()
+{
+	if (m_pKeyMgr->KeyDown(ENGINE::KEY_1))
+	{
+		ENGINE::Set_CamView(ENGINE::FIRST_VIEW);
+	}
+
+	else if (m_pKeyMgr->KeyDown(ENGINE::KEY_2))
+	{
+		ENGINE::Set_CamView(ENGINE::BACK_VIEW);
+	}
 }
 
 CMainApp* CMainApp::Create()

@@ -86,8 +86,8 @@ _int CDynamic_Camera::Update()
 	if (m_bIsDead)
 		return DEAD_OBJ;
 
-	SetUp_ViewType(m_eCamView);
 	SetUp_MouseRotate();
+	SetUp_ViewType(m_eCamView);
 	CKeyMgr::GetInstance()->Set_MouseLock();
 
 	CCamera::SetUp_ViewMat();

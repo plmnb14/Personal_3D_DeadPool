@@ -188,7 +188,7 @@ void CTransform::Add_At(const _v3 & _At)
 
 void CTransform::Add_Angle(const ANGLE_TYPE eAxis, const float fSpeed)
 {
-	*(((_float*)&m_tInfo.vAngle) + eAxis) += D3DXToRadian(fSpeed);
+	m_tInfo.vAngle[eAxis] += D3DXToRadian(fSpeed);
 	//m_tInfo.vAngle[eAxis] += fSpeed;
 }
 

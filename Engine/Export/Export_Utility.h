@@ -47,10 +47,12 @@ inline HRESULT	Ready_Camera(LPDIRECT3DDEVICE9 pGraphicDev,
 	CameraView _CameraView,
 	CameraMode _CameraMode);
 
-inline HRESULT Set_MainCamera(const _ushort& _eCameraClass, const _tchar* pCameraTag);
-
 inline HRESULT Set_CamTarget(CGameObject* _pTarget);
 
+inline void Set_MainCamera(const _ushort & _eCameraClass, const _tchar * pCameraTag);
+inline void Change_MainCam(const _ushort& _eCameraClass, const _tchar* pCameraTag, _bool _bDelay = false);
+inline void Set_CamView(ENGINE::CameraView _eCamViewType);
+inline void Set_CamMode(ENGINE::CameraMode _eCamMode);
 
 // Release Utility
 inline void			Release_Utility(void);

@@ -17,9 +17,11 @@
 #define V3_NORMAL_S(_pSelf)		D3DXVec3Normalize(_pSelf, _pSelf);
 
 //
-#define CONVERT_BUFFFER(_pComponent) static_cast<ENGINE::CVIBuffer*>(_pComponent)
-#define CONVERT_TEXTURE(_pComponent) static_cast<ENGINE::CTexture*>(_pComponent)
-#define CONVERT_TRANS(_pComponent)   static_cast<ENGINE::CTransform*>(_pComponent)
+#define COMP_TO_BUFFFER(_pComponent) static_cast<ENGINE::CVIBuffer*>(_pComponent)
+#define COMP_TO_TEXTURE(_pComponent) static_cast<ENGINE::CTexture*>(_pComponent)
+#define COMP_TO_TRANS(_pComponent)   static_cast<ENGINE::CTransform*>(_pComponent)
+
+#define TARGET_TO_TRANS(_Target) static_cast<CTransform*>((_Target)->Get_Component(L"Transform"))
 
 //
 

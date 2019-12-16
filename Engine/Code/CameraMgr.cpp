@@ -5,6 +5,7 @@ USING(ENGINE)
 IMPLEMENT_SINGLETON(CCameraMgr)
 
 CCameraMgr::CCameraMgr(void)
+	: m_bDelay(false), m_bChange(false)
 {
 
 }
@@ -16,8 +17,13 @@ CCameraMgr::~CCameraMgr(void)
 
 void CCameraMgr::Update()
 {
-	if(m_MainCamera != nullptr)
+	if (m_MainCamera != nullptr)
+	{
 		m_MainCamera->Update();
+
+		if(m_bChange)
+			Set_MainCamera(m_sCamClass, m_pCamTag);
+	}
 }
 
 
@@ -66,11 +72,26 @@ HRESULT CCameraMgr::Ready_Camera(LPDIRECT3DDEVICE9 pGraphicDev,
 	return S_OK;
 }
 
-HRESULT CCameraMgr::Set_MainCamera(const _ushort & _eCameraClass, const _tchar * pCameraTag)
+void CCameraMgr::Set_MainCamera(const _ushort & _eCameraClass, const _tchar * pCameraTag)
 {
-	m_MainCamera = Find_Camera(_eCameraClass, pCameraTag);
+	if (m_MainCamera == nullptr)
+	{
+		m_MainCamera = Find_Camera(_eCameraClass, pCameraTag);
+		m_bChange = false;
+		return;
+	}
 
-	return S_OK;
+	else if (m_MainCamera != nullptr)
+	{
+		CCamera* tmpCam = Find_Camera(_eCameraClass, pCameraTag);
+
+		if (Calc_Distance(m_MainCamera, tmpCam, &m_vDistance))
+		{
+			m_MainCamera = Find_Camera(_eCameraClass, pCameraTag);
+			m_bChange = false;
+			return;
+		}
+	}
 }
 
 HRESULT CCameraMgr::Set_Target(CGameObject * _Target)
@@ -82,6 +103,36 @@ HRESULT CCameraMgr::Set_Target(CGameObject * _Target)
 
 	return S_OK;
 }
+
+void CCameraMgr::Change_MainCam(const _ushort & _eCameraClass, const _tchar * pCameraTag, _bool _bDelay)
+{
+	if (!m_bChange)
+	{
+		if(m_pCamTag != nullptr)
+			m_pCamTag = nullptr;
+
+		_tchar* tmpChar = new _tchar[128];
+
+		lstrcpy(tmpChar, pCameraTag);
+		m_pCamTag = tmpChar;
+
+		m_bDelay = _bDelay;
+		m_sCamClass = _eCameraClass;
+		m_bChange = true;
+	}
+}
+
+void CCameraMgr::Set_CamView(ENGINE::CameraView _eCamViewType)
+{
+	m_MainCamera->Set_CameraViewType(_eCamViewType);
+}
+
+void CCameraMgr::Set_CamMode(ENGINE::CameraMode _eCamMode)
+{
+	m_MainCamera->Set_CameraMode(_eCamMode);
+}
+
+
 
 const _mat& CCameraMgr::Get_ViewMat()
 {
@@ -133,6 +184,25 @@ CCamera* CCameraMgr::Find_Camera(const _ushort& _eCameraClass, const _tchar* pCa
 		return nullptr;
 
 	return iter->second;
+}
+
+_bool CCameraMgr::Calc_Distance(CCamera * _pOld, CCamera * _pNew, _v3 * _Distance)
+{
+	_v3 tmpDir , vOld, vNew;
+
+	vOld = TARGET_TO_TRANS(_pOld)->Get_Pos();
+	vNew = TARGET_TO_TRANS(_pNew)->Get_Pos();
+
+
+	*_Distance = vOld - vNew;
+	m_fLength = D3DXVec3Length(&(vOld - vNew));
+
+
+	CALC::V3_Dir_Normal(&tmpDir, &vOld, &vNew);
+
+	TARGET_TO_TRANS(_pOld)->Add_Pos(10.f, tmpDir);
+
+	return (m_fLength <= 0 ? true : false);
 }
 
 void CCameraMgr::Free(void)

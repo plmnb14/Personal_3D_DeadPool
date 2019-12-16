@@ -84,11 +84,13 @@ HRESULT CScene_Logo::Initialize()
 {
 	HRESULT hr = 0;
 
+	// Setup
 	FAILED_CHECK_RETURN(SetUp_PineLine(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Camera(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Buffer(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Texture(), E_FAIL);
 
+	// Layers
 	FAILED_CHECK_RETURN(Add_Environment_Layer(), E_FAIL);
 	FAILED_CHECK_RETURN(Add_Object_Layer(), E_FAIL);
 	FAILED_CHECK_RETURN(Add_UI_Layer(), E_FAIL);
@@ -118,8 +120,13 @@ HRESULT CScene_Logo::SetUp_Camera()
 	HRESULT hr = 0;
 
 	ENGINE::Ready_Camera(m_pGraphicDev,
-		ENGINE::DYNAMIC_CAM, L"Player_BackCam",
+		ENGINE::DYNAMIC_CAM, L"Player_FirstCam",
 		ENGINE::BACK_VIEW,
+		ENGINE::DEFAULT_MODE);
+
+	ENGINE::Ready_Camera(m_pGraphicDev,
+		ENGINE::DYNAMIC_CAM, L"Player_BackCam",
+		ENGINE::FIRST_VIEW,
 		ENGINE::DEFAULT_MODE);
 
 	ENGINE::Ready_Camera(m_pGraphicDev,

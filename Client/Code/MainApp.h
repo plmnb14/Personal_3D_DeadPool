@@ -25,9 +25,13 @@ public:
 	void			LateUpdate_MainApp();
 
 private:
+	void			Global_KeyInput();
+
+private:
 	LPDIRECT3DDEVICE9		m_pDeviceMgr;
 	ENGINE::CGraphicDev*	m_pDeviceClass;
 	ENGINE::CManagement*	m_pManagement;
+	ENGINE::CKeyMgr*		m_pKeyMgr;
 
 public:
 	static CMainApp*		Create();

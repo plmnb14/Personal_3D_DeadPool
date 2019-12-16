@@ -98,6 +98,21 @@ void CPlayer::Movement()
 
 	m_fAngle_Recover = (_float)((int)m_fAngle_Recover % 360);
 
+	//m_pTransform->Set_Angle({ 0, fRadian, 0 });
+	//m_pTransform->Add_Pos(fMoveSpeed);
+
+	//return;
+	if (m_bFront)
+	{
+		m_pTransform->Add_Pos(fMoveSpeed);
+	}
+
+	else if (m_bBack)
+	{
+		m_pTransform->Add_Pos(-fMoveSpeed);
+	}
+
+	return;
 
 	if (m_bFront)
 	{
@@ -330,7 +345,7 @@ HRESULT CPlayer::Initialize()
 
 	m_pTransform->Set_At({ 0,1.5f,1 });
 	m_pTransform->Set_Scale(_v3{ 1.0f, 3.0f, 1.0f });
-	m_pTransform->Set_Pos(_v3{ 0.f, 1.5f, 10.f });
+	m_pTransform->Set_Pos(_v3{ 10.f, 1.5f, 20.f });
 
 	return S_OK;
 }

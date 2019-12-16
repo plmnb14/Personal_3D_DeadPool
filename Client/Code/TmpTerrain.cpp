@@ -47,7 +47,7 @@ HRESULT CTmpTerrain::Add_Component()
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	m_mapComponent.insert({ L"Texutre", pComponent });
 	
-	m_pTexture = CONVERT_TEXTURE(pComponent);
+	m_pTexture = COMP_TO_TEXTURE(pComponent);
 	NULL_CHECK_RETURN(m_pTexture, E_FAIL);
 	
 	
@@ -55,7 +55,7 @@ HRESULT CTmpTerrain::Add_Component()
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	m_mapComponent.insert({L"Buffer", pComponent });
 	
-	m_pBuffer = CONVERT_BUFFFER(pComponent);
+	m_pBuffer = COMP_TO_BUFFFER(pComponent);
 	NULL_CHECK_RETURN(m_pBuffer, E_FAIL);
 
 
@@ -63,7 +63,7 @@ HRESULT CTmpTerrain::Add_Component()
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	m_mapComponent.insert({ L"Transform", pComponent });
 
-	m_pTransform = CONVERT_TRANS(pComponent);
+	m_pTransform = COMP_TO_TRANS(pComponent);
 	NULL_CHECK_RETURN(m_pTransform, E_FAIL);
 
 	return S_OK;

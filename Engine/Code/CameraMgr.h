@@ -32,9 +32,14 @@ public:
 						CameraView _CameraView,
 						CameraMode _CameraMode);
 
-	HRESULT Set_MainCamera(const _ushort& _eCameraClass, const _tchar* pCameraTag);
+	void Set_MainCamera(const _ushort& _eCameraClass, const _tchar* pCameraTag);
 
 	HRESULT Set_Target(CGameObject* _Target);
+
+public:
+	void Change_MainCam(const _ushort& _eCameraClass, const _tchar* pCameraTag, _bool _bDelay = false);
+	void Set_CamView(ENGINE::CameraView _eCamViewType);
+	void Set_CamMode(ENGINE::CameraMode _eCamMode);
 
 public:
 	const _mat& Get_ViewMat();
@@ -45,11 +50,12 @@ public:
 	const _v3& Get_Look();
 	const _v3& Get_Pos();
 
-public:
 	const _float& Get_XAngle();
 
 private:
 	CCamera* Find_Camera(const _ushort& _eCameraClass, const _tchar* pCameraTag);
+	_bool Calc_Distance(CCamera* _pOld , CCamera* _pNew, _v3* _Distance);
+	
 
 private:
 	CCamera*							m_MainCamera;
@@ -63,7 +69,16 @@ private:
 	_v3		m_vUp;
 	_v3		m_vLook;
 	_v3		m_vPos;
+	_v3		m_vDistance;
+
 	_float  m_fX_Angle;
+	_float	m_fLength;
+
+	_bool	m_bDelay;
+	_bool	m_bChange;
+
+	_ushort m_sCamClass;
+	_tchar* m_pCamTag;
 
 public:
 	virtual void Free(void);
