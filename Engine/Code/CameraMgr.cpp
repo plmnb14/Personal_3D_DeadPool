@@ -1,0 +1,150 @@
+#include "CameraMgr.h"
+
+USING(ENGINE)
+
+IMPLEMENT_SINGLETON(CCameraMgr)
+
+CCameraMgr::CCameraMgr(void)
+{
+
+}
+
+CCameraMgr::~CCameraMgr(void)
+{
+	Free();
+}
+
+void CCameraMgr::Update()
+{
+	if(m_MainCamera != nullptr)
+		m_MainCamera->Update();
+}
+
+
+HRESULT CCameraMgr::Reserve_ContainerSize(const _ushort& wSize)
+{
+	if (nullptr != m_pmapCamera)
+		return E_FAIL;
+
+	m_pmapCamera = new map<const _tchar*, CCamera*>[wSize];
+
+	m_wContainerSize = wSize;
+
+	return S_OK;
+}
+
+HRESULT CCameraMgr::Ready_Camera(LPDIRECT3DDEVICE9 pGraphicDev,
+								const _ushort& _eCameraClass,
+								const _tchar* pCameraTag,
+								CameraView _eCameraView,
+								CameraMode _eCameraMode)
+{
+	if (nullptr == m_pmapCamera)
+	{
+		MSG_BOX("Renderer Container not Reserved");
+		return E_FAIL;
+	}
+
+	CCamera* pCamera = Find_Camera(_eCameraClass, pCameraTag);
+
+	if (nullptr != pCamera)
+		return E_FAIL;
+
+	switch (_eCameraClass)
+	{
+	case ENGINE::DYNAMIC_CAM:
+	{
+		pCamera = CDynamic_Camera::Create(pGraphicDev, _eCameraView, _eCameraMode);
+		break;
+	}
+	}
+
+	NULL_CHECK_RETURN(pCamera, E_FAIL);
+
+	m_pmapCamera[_eCameraClass].emplace(pCameraTag, pCamera);
+
+	return S_OK;
+}
+
+HRESULT CCameraMgr::Set_MainCamera(const _ushort & _eCameraClass, const _tchar * pCameraTag)
+{
+	m_MainCamera = Find_Camera(_eCameraClass, pCameraTag);
+
+	return S_OK;
+}
+
+HRESULT CCameraMgr::Set_Target(CGameObject * _Target)
+{
+	if (m_MainCamera != nullptr)
+	{
+		m_MainCamera->Set_Target(_Target);
+	}
+
+	return S_OK;
+}
+
+const _mat& CCameraMgr::Get_ViewMat()
+{
+	m_matView = m_MainCamera->Get_ViewMat();
+	return m_matView;
+}
+
+const _mat& CCameraMgr::Get_ProjMat()
+{
+	m_matProj = m_MainCamera->Get_ProjMat();
+	return m_matProj;
+}
+
+const _v3 & CCameraMgr::Get_Right()
+{
+	m_vRight = m_MainCamera->Get_Right();
+	return m_vRight;
+}
+
+const _v3 & CCameraMgr::Get_Up()
+{
+	m_vUp = m_MainCamera->Get_Up();
+	return m_vUp;
+}
+
+const _v3 & CCameraMgr::Get_Look()
+{
+	m_vLook = m_MainCamera->Get_Look();
+	return m_vLook;
+}
+
+const _v3 & CCameraMgr::Get_Pos()
+{
+	m_vPos = m_MainCamera->Get_Pos();
+	return m_vPos;
+}
+
+const _float & CCameraMgr::Get_XAngle()
+{
+	m_fX_Angle = m_MainCamera->Get_XAngle();
+	return m_fX_Angle;
+}
+
+CCamera* CCameraMgr::Find_Camera(const _ushort& _eCameraClass, const _tchar* pCameraTag)
+{
+	auto	iter = find_if(m_pmapCamera[_eCameraClass].begin(), m_pmapCamera[_eCameraClass].end(), CTag_Finder(pCameraTag));
+
+	if (iter == m_pmapCamera[_eCameraClass].end())
+		return nullptr;
+
+	return iter->second;
+}
+
+void CCameraMgr::Free(void)
+{
+	for (_ushort i = 0; i < m_wContainerSize; ++i)
+	{
+		for_each(m_pmapCamera[i].begin(), m_pmapCamera[i].end(), CDeleteMap());
+		m_pmapCamera[i].clear();
+	}
+
+	Safe_Delete_Array(m_pmapCamera);
+}
+
+
+
